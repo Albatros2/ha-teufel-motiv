@@ -6,7 +6,6 @@ import voluptuous as vol
 
 from homeassistant import config_entries
 from homeassistant.const import CONF_HOST, CONF_NAME
-from homeassistant.helpers.service_info.zeroconf import ZeroconfServiceInfo
 
 from .api import TeufelApiClient, TeufelApiError
 from .const import CONF_PORT, DEFAULT_NAME, DEFAULT_PORT, DOMAIN
@@ -49,8 +48,13 @@ class TeufelLanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         )
         return self.async_show_form(step_id="user", data_schema=schema, errors=errors)
 
-    async def async_step_zeroconf(self, discovery_info: ZeroconfServiceInfo):
-        host = discovery_info.host
+    async def async_step_zeroconf(self, discovery_info: Any):
+        # Zeroconf payload shape varies between HA versions.
+        host = getattr(discovery_info, "host", None)
+        name = getattr(discovery_info, "name", None)
+        if host is None and isinstance(discovery_info, dict):
+            host = discovery_info.get("host")
+            name = discovery_info.get("name")
         if not host:
             return self.async_abort(reason="cannot_connect")
 
@@ -58,10 +62,10 @@ class TeufelLanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         self._abort_if_unique_id_configured(updates={CONF_HOST: host})
 
         self.context["title_placeholders"] = {
-            "name": discovery_info.name.rstrip(".") or host
+            "name": (name or "").rstrip(".") or host
         }
         self._discovered_host = host
-        self._discovered_name = discovery_info.name.rstrip(".") or DEFAULT_NAME
+        self._discovered_name = (name or "").rstrip(".") or DEFAULT_NAME
 
         return await self.async_step_zeroconf_confirm()
 
