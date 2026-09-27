@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import asyncio
+import json
 from typing import Any
+from urllib.parse import urlencode
 
 from homeassistant.core import HomeAssistant
 from homeassistant.exceptions import HomeAssistantError
@@ -29,6 +31,56 @@ class TeufelApiClient:
                 return await resp.json(content_type=None)
         except Exception as err:
             raise TeufelApiError(f"POST {endpoint} failed: {err}") from err
+
+    async def _get(self, endpoint: str, params: dict[str, Any] | None = None) -> Any:
+        query = f"?{urlencode(params)}" if params else ""
+        url = f"{self._base_url}{endpoint}{query}"
+        try:
+            async with asyncio.timeout(65):
+                resp = await self._session.get(url)
+                resp.raise_for_status()
+                text = await resp.text()
+                try:
+                    return json.loads(text)
+                except json.JSONDecodeError:
+                    return text
+        except Exception as err:
+            raise TeufelApiError(f"GET {endpoint} failed: {err}") from err
+
+    async def async_create_event_queue(self) -> str | None:
+        # Firmware variants differ in queue creation endpoint behavior.
+        candidates: list[tuple[str, str, dict[str, Any] | None]] = [
+            ("GET", "/api/event/createQueue", None),
+            ("POST", "/api/event/createQueue", {}),
+        ]
+        for method, endpoint, payload in candidates:
+            try:
+                if method == "GET":
+                    result = await self._get(endpoint)
+                else:
+                    result = await self._post(endpoint, payload or {})
+            except TeufelApiError:
+                continue
+
+            if isinstance(result, dict):
+                queue_id = result.get("queueId") or result.get("id")
+                if isinstance(queue_id, str) and queue_id:
+                    return queue_id
+            if isinstance(result, str) and result:
+                return result
+        return None
+
+    async def async_poll_event_queue(self, queue_id: str, timeout: int = 60) -> list[dict[str, Any]]:
+        params = {"queueId": queue_id, "timeout": timeout}
+        try:
+            result = await self._get("/api/event/pollQueue", params=params)
+        except TeufelApiError:
+            # Some firmware uses lowercase path.
+            result = await self._get("/api/event/pollqueue", params=params)
+
+        if isinstance(result, list):
+            return [item for item in result if isinstance(item, dict)]
+        return []
 
     async def async_get_data(self, path: str, roles: str = "@all", typ: str = "structure") -> Any:
         return await self._post(

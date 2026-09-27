@@ -32,6 +32,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     api = TeufelApiClient(hass, host=host, port=port)
     coordinator = TeufelDataUpdateCoordinator(hass, api=api, entry=entry)
     await coordinator.async_config_entry_first_refresh()
+    await coordinator.async_start_event_listener()
 
     entry.runtime_data = TeufelRuntimeData(api=api, coordinator=coordinator)
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
@@ -39,6 +40,10 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    runtime = entry.runtime_data
+    if runtime is not None:
+        await runtime.coordinator.async_stop_event_listener()
+
     unloaded = await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     if unloaded:
         entry.runtime_data = None
