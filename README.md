@@ -64,6 +64,14 @@ entities:
     name: Preset 2
   - entity: button.teufel_speaker_preset_3
     name: Preset 3
+    - entity: switch.teufel_speaker_eco_mode
+      name: Eco Mode
+    - entity: switch.teufel_speaker_notifications
+      name: Notifications
+    - entity: sensor.teufel_speaker_battery_state_of_charge
+      name: Battery SoC
+    - entity: sensor.teufel_speaker_power_target
+      name: Power Target
 ```
 
 Entity IDs may vary depending on your configured name.

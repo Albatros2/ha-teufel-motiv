@@ -47,6 +47,24 @@ class TeufelApiClient:
         except Exception as err:
             raise TeufelApiError(f"GET {endpoint} failed: {err}") from err
 
+    def _extract_queue_id(self, result: Any) -> str | None:
+        if isinstance(result, dict):
+            queue_id = result.get("queueId") or result.get("id")
+            if isinstance(queue_id, str) and queue_id:
+                return queue_id
+        if isinstance(result, str) and result:
+            queue_id = result.strip().strip('"').strip("{}").strip()
+            if queue_id:
+                return queue_id
+        return None
+
+    async def async_modify_event_queue(self, subscriptions: list[dict[str, str]]) -> str | None:
+        result = await self._get(
+            "/api/event/modifyQueue",
+            params={"subscribe": json.dumps(subscriptions, separators=(",", ":"))},
+        )
+        return self._extract_queue_id(result)
+
     async def async_create_event_queue(self) -> str | None:
         # Firmware variants differ in queue creation endpoint behavior.
         candidates: list[tuple[str, str, dict[str, Any] | None]] = [
@@ -61,13 +79,9 @@ class TeufelApiClient:
                     result = await self._post(endpoint, payload or {})
             except TeufelApiError:
                 continue
-
-            if isinstance(result, dict):
-                queue_id = result.get("queueId") or result.get("id")
-                if isinstance(queue_id, str) and queue_id:
-                    return queue_id
-            if isinstance(result, str) and result:
-                return result
+            queue_id = self._extract_queue_id(result)
+            if queue_id is not None:
+                return queue_id
         return None
 
     async def async_poll_event_queue(self, queue_id: str, timeout: int = 60) -> list[dict[str, Any]]:
@@ -146,6 +160,20 @@ class TeufelApiClient:
     async def async_set_dynamore(self, enabled: bool) -> Any:
         return await self.async_set_data(
             path="settings:/dspc/dynamoreEnabled",
+            roles="value",
+            value={"type": "bool_", "bool_": bool(enabled)},
+        )
+
+    async def async_set_notifications_enabled(self, enabled: bool) -> Any:
+        return await self.async_set_data(
+            path="settings:/teufel/notificationsEnabled",
+            roles="value",
+            value={"type": "bool_", "bool_": bool(enabled)},
+        )
+
+    async def async_set_eco_mode(self, enabled: bool) -> Any:
+        return await self.async_set_data(
+            path="settings:/dspc/ecoModeEnabled",
             roles="value",
             value={"type": "bool_", "bool_": bool(enabled)},
         )

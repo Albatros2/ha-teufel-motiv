@@ -71,6 +71,54 @@ class TeufelDynamoreSwitch(CoordinatorEntity, SwitchEntity):
         await self.coordinator.async_request_refresh()
 
 
+class TeufelEcoModeSwitch(CoordinatorEntity, SwitchEntity):
+    _attr_has_entity_name = True
+    _attr_name = "Eco Mode"
+    _attr_icon = "mdi:leaf"
+
+    def __init__(self, entry: ConfigEntry, runtime: TeufelRuntimeData) -> None:
+        super().__init__(runtime.coordinator)
+        self._api = runtime.api
+        self._attr_unique_id = f"{entry.entry_id}_eco_mode"
+        self._attr_device_info = get_device_info(entry)
+
+    @property
+    def is_on(self) -> bool | None:
+        return _extract_bool(self.coordinator.data.get("eco_mode_enabled"))
+
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        await self._api.async_set_eco_mode(True)
+        await self.coordinator.async_request_refresh()
+
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        await self._api.async_set_eco_mode(False)
+        await self.coordinator.async_request_refresh()
+
+
+class TeufelNotificationsSwitch(CoordinatorEntity, SwitchEntity):
+    _attr_has_entity_name = True
+    _attr_name = "Notifications"
+    _attr_icon = "mdi:bell-ring"
+
+    def __init__(self, entry: ConfigEntry, runtime: TeufelRuntimeData) -> None:
+        super().__init__(runtime.coordinator)
+        self._api = runtime.api
+        self._attr_unique_id = f"{entry.entry_id}_notifications"
+        self._attr_device_info = get_device_info(entry)
+
+    @property
+    def is_on(self) -> bool | None:
+        return _extract_bool(self.coordinator.data.get("notifications_enabled"))
+
+    async def async_turn_on(self, **kwargs: Any) -> None:
+        await self._api.async_set_notifications_enabled(True)
+        await self.coordinator.async_request_refresh()
+
+    async def async_turn_off(self, **kwargs: Any) -> None:
+        await self._api.async_set_notifications_enabled(False)
+        await self.coordinator.async_request_refresh()
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -81,5 +129,7 @@ async def async_setup_entry(
         [
             TeufelMuteSwitch(entry, runtime),
             TeufelDynamoreSwitch(entry, runtime),
+            TeufelEcoModeSwitch(entry, runtime),
+            TeufelNotificationsSwitch(entry, runtime),
         ]
     )

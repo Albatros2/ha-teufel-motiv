@@ -28,12 +28,47 @@ class TeufelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "settings:/dspc/dynamoreEnabled": "dynamore",
             "settings:/dspc/dspcBass": "bass",
             "settings:/dspc/dspcTreble": "treble",
+            "settings:/dspc/ecoModeEnabled": "eco_mode_enabled",
             "settings:/system/maxIdleTime": "max_idle_time",
             "settings:/system/maxBatteryIdleTime": "max_battery_idle_time",
             "player:player/data/playTime": "play_time",
             "teufel:mediaPlayerData": "media",
             "network:info": "network_info",
+            "settings:/deviceName": "device_name",
+            "settings:/teufel/notificationsEnabled": "notifications_enabled",
+            "powermanager:target": "power_target",
+            "teufel:batteryRelativeStateOfCharge": "battery_soc",
+            "teufel:batteryCycleCount": "battery_cycle_count",
+            "teufel:batteryStat": "battery_stat",
+            "teufel:batteryAcPlug": "battery_ac_plug",
+            "teufel:batteryDefective": "battery_defective",
+            "teufel:batteryPercentageStatus": "battery_percentage_status",
         }
+        self._event_subscriptions: list[dict[str, str]] = [
+            {"path": "teufel:mediaPlayerData", "type": "itemWithValue"},
+            {"path": "player:player/data/playTime", "type": "itemWithValue"},
+            {"path": "player:volume", "type": "itemWithValue"},
+            {"path": "settings:/mediaPlayer/mute", "type": "itemWithValue"},
+            {"path": "settings:/dspc/dspcBass", "type": "itemWithValue"},
+            {"path": "settings:/dspc/dspcTreble", "type": "itemWithValue"},
+            {"path": "settings:/dspc/dynamoreEnabled", "type": "itemWithValue"},
+            {"path": "settings:/dspc/ecoModeEnabled", "type": "itemWithValue"},
+            {"path": "settings:/system/maxIdleTime", "type": "itemWithValue"},
+            {"path": "settings:/system/maxBatteryIdleTime", "type": "itemWithValue"},
+            {"path": "settings:/deviceName", "type": "itemWithValue"},
+            {"path": "settings:/teufel/notificationsEnabled", "type": "itemWithValue"},
+            {"path": "powermanager:target", "type": "itemWithValue"},
+            {"path": "teufel:batteryRelativeStateOfCharge", "type": "itemWithValue"},
+            {"path": "teufel:batteryCycleCount", "type": "itemWithValue"},
+            {"path": "teufel:batteryStat", "type": "itemWithValue"},
+            {"path": "teufel:batteryAcPlug", "type": "itemWithValue"},
+            {"path": "teufel:batteryDefective", "type": "itemWithValue"},
+            {"path": "teufel:batteryPercentageStatus", "type": "itemWithValue"},
+            {"path": "network:info", "type": "itemWithValue"},
+            {"path": "presets:", "type": "rows"},
+            {"path": "playhistory:", "type": "rows"},
+            {"path": "firmwareupdate:updateStatus", "type": "itemWithValue"},
+        ]
 
     async def async_start_event_listener(self) -> None:
         if self._event_task is None or self._event_task.done():
@@ -69,7 +104,9 @@ class TeufelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
         while True:
             try:
                 if self._event_queue_id is None:
-                    self._event_queue_id = await self.api.async_create_event_queue()
+                    self._event_queue_id = await self.api.async_modify_event_queue(self._event_subscriptions)
+                    if self._event_queue_id is None:
+                        self._event_queue_id = await self.api.async_create_event_queue()
                     if self._event_queue_id is None:
                         await asyncio.sleep(10)
                         continue
@@ -104,6 +141,20 @@ class TeufelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             max_battery_idle_time = await self.api.async_get_data(
                 "settings:/system/maxBatteryIdleTime", roles="@all", typ="structure"
             )
+            device_name = await self.api.async_get_data("settings:/deviceName", roles="@all", typ="structure")
+            notifications_enabled = await self.api.async_get_data(
+                "settings:/teufel/notificationsEnabled", roles="@all", typ="structure"
+            )
+            eco_mode_enabled = await self.api.async_get_data("settings:/dspc/ecoModeEnabled", roles="@all", typ="structure")
+            power_target = await self.api.async_get_data("powermanager:target", roles="@all", typ="structure")
+            battery_soc = await self.api.async_get_data("teufel:batteryRelativeStateOfCharge", roles="@all", typ="structure")
+            battery_cycle_count = await self.api.async_get_data("teufel:batteryCycleCount", roles="@all", typ="structure")
+            battery_stat = await self.api.async_get_data("teufel:batteryStat", roles="@all", typ="structure")
+            battery_ac_plug = await self.api.async_get_data("teufel:batteryAcPlug", roles="@all", typ="structure")
+            battery_defective = await self.api.async_get_data("teufel:batteryDefective", roles="@all", typ="structure")
+            battery_percentage_status = await self.api.async_get_data(
+                "teufel:batteryPercentageStatus", roles="@all", typ="structure"
+            )
             network_info = await self.api.async_get_data("network:info", roles="@all", typ="structure")
             play_time = await self.api.async_get_data("player:player/data/playTime", roles="@all", typ="structure")
 
@@ -116,6 +167,16 @@ class TeufelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "treble": treble,
                 "max_idle_time": max_idle_time,
                 "max_battery_idle_time": max_battery_idle_time,
+                "device_name": device_name,
+                "notifications_enabled": notifications_enabled,
+                "eco_mode_enabled": eco_mode_enabled,
+                "power_target": power_target,
+                "battery_soc": battery_soc,
+                "battery_cycle_count": battery_cycle_count,
+                "battery_stat": battery_stat,
+                "battery_ac_plug": battery_ac_plug,
+                "battery_defective": battery_defective,
+                "battery_percentage_status": battery_percentage_status,
                 "network_info": network_info,
                 "play_time": play_time,
             }
