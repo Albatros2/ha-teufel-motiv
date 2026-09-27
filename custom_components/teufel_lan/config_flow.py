@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import asyncio
+import inspect
 from typing import Any
 
 import voluptuous as vol
@@ -119,10 +120,10 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         user_input: dict[str, Any] | None,
     ) -> vol.Schema:
         discovered_options = [
-            selector.SelectOptionDict(
-                value=device["id"],
-                label=f"{device['name']} ({device['host']})",
-            )
+            {
+                "value": device["id"],
+                "label": f"{device['name']} ({device['host']})",
+            }
             for device in discovered_devices
         ]
 
@@ -138,7 +139,6 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             fields[vol.Optional(CONF_DISCOVERED_DEVICE)] = selector.SelectSelector(
                 selector.SelectSelectorConfig(
                     options=discovered_options,
-                    mode=selector.SelectSelectorMode.DROPDOWN,
                     sort=True,
                 )
             )
@@ -168,10 +168,21 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         async def _resolve(service_type: str, service_name: str) -> None:
             info = AsyncServiceInfo(service_type, service_name)
-            if not await info.async_request(async_zc.zeroconf, 2000):
+            try:
+                requested = await info.async_request(async_zc.zeroconf, 2000)
+            except TypeError:
+                requested = await info.async_request(async_zc.zeroconf, timeout=2000)
+            except Exception:
                 return
 
-            addresses = info.parsed_scoped_addresses()
+            if not requested:
+                return
+
+            try:
+                addresses = info.parsed_scoped_addresses()
+            except Exception:
+                addresses = info.parsed_addresses()
+
             if not addresses:
                 return
 
@@ -205,18 +216,27 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             pending_tasks.add(task)
             task.add_done_callback(lambda done_task: pending_tasks.discard(done_task))
 
-        browsers = [
-            AsyncServiceBrowser(async_zc.zeroconf, service_type, handlers=[_service_handler])
-            for service_type in service_types
-        ]
+        try:
+            browsers = [
+                AsyncServiceBrowser(async_zc.zeroconf, service_type, handlers=[_service_handler])
+                for service_type in service_types
+            ]
 
-        await asyncio.sleep(1.5)
+            await asyncio.sleep(1.5)
 
-        for browser in browsers:
-            await browser.async_cancel()
+            for browser in browsers:
+                cancel_result = (
+                    browser.async_cancel()
+                    if hasattr(browser, "async_cancel")
+                    else browser.cancel()
+                )
+                if inspect.isawaitable(cancel_result):
+                    await cancel_result
 
-        if pending_tasks:
-            await asyncio.gather(*pending_tasks, return_exceptions=True)
+            if pending_tasks:
+                await asyncio.gather(*pending_tasks, return_exceptions=True)
+        except Exception:
+            return []
 
         return sorted(
             devices.values(),
