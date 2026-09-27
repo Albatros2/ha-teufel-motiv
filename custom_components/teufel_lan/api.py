@@ -91,6 +91,20 @@ class TeufelApiClient:
             value={"type": "bool_", "bool_": bool(muted)},
         )
 
+    async def async_set_dynamore(self, enabled: bool) -> Any:
+        return await self.async_set_data(
+            path="settings:/dspc/dynamoreEnabled",
+            roles="value",
+            value={"type": "bool_", "bool_": bool(enabled)},
+        )
+
+    async def async_set_max_idle_time(self, seconds: int) -> Any:
+        return await self.async_set_data(
+            path="settings:/system/maxIdleTime",
+            roles="value",
+            value={"type": "i32_", "i32_": int(seconds)},
+        )
+
     async def async_stop(self) -> None:
         await self.async_set_data(
             path="player:player/control",

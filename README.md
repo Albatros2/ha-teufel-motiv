@@ -15,10 +15,13 @@ Unofficial local LAN integration for Teufel speakers discovered via mDNS service
 - Media Player entity with artwork from stream metadata
 - Set volume via local API
 - Mute/unmute via local API
+- Dynamore on/off switch
 - Bass and treble EQ controls
+- Max idle time control (seconds)
 - Buttons: Stop and Preset 1-3
 - Start TuneIn station by guide ID
 - Source selection from play history
+- Diagnostic sensors: WiFi SSID, WiFi signal, IP address, play time
 
 ## Recommended Dashboard Card
 

@@ -25,16 +25,22 @@ class TeufelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             media = await self.api.async_get_data("teufel:mediaPlayerData", roles="@all", typ="structure")
             volume = await self.api.async_get_data("player:volume", roles="@all", typ="structure")
             mute = await self.api.async_get_data("settings:/mediaPlayer/mute", roles="@all", typ="structure")
+            dynamore = await self.api.async_get_data("settings:/dspc/dynamoreEnabled", roles="@all", typ="structure")
             bass = await self.api.async_get_data("settings:/dspc/dspcBass", roles="@all", typ="structure")
             treble = await self.api.async_get_data("settings:/dspc/dspcTreble", roles="@all", typ="structure")
+            max_idle_time = await self.api.async_get_data("settings:/system/maxIdleTime", roles="@all", typ="structure")
+            network_info = await self.api.async_get_data("network:info", roles="@all", typ="structure")
             play_time = await self.api.async_get_data("player:player/data/playTime", roles="@all", typ="structure")
 
             return {
                 "media": media,
                 "volume": volume,
                 "mute": mute,
+                "dynamore": dynamore,
                 "bass": bass,
                 "treble": treble,
+                "max_idle_time": max_idle_time,
+                "network_info": network_info,
                 "play_time": play_time,
             }
         except TeufelApiError as err:
