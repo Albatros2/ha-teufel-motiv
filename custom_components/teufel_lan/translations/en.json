@@ -3,9 +3,10 @@
     "step": {
       "user": {
         "title": "Set up Teufel Motiv Home LAN HA-Integration",
-        "description": "Connect to a Teufel speaker on your local network.",
+        "description": "Choose an auto-discovered MOTIV HOME device or enter host/IP manually.",
         "data": {
-          "host": "Host or IP",
+          "discovered_device": "Discovered MOTIV HOME device",
+          "host": "Host or IP (optional when selecting above)",
           "port": "Port",
           "name": "Name"
         }
@@ -20,7 +21,9 @@
       }
     },
     "error": {
-      "cannot_connect": "Failed to connect"
+      "cannot_connect": "Failed to connect",
+      "no_device_selected": "Select a discovered device or enter host/IP",
+      "name_required": "Name is required"
     }
   }
 }

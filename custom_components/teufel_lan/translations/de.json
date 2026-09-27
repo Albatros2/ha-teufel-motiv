@@ -3,9 +3,10 @@
     "step": {
       "user": {
         "title": "Teufel Motiv Home LAN HA-Integration einrichten",
-        "description": "Verbinde einen Teufel Lautsprecher im lokalen Netzwerk.",
+        "description": "Waehle ein automatisch erkanntes MOTIV HOME Geraet oder gib Host/IP manuell ein.",
         "data": {
-          "host": "Host oder IP",
+          "discovered_device": "Gefundenes MOTIV HOME Geraet",
+          "host": "Host oder IP (optional bei Auswahl oben)",
           "port": "Port",
           "name": "Name"
         }
@@ -20,7 +21,9 @@
       }
     },
     "error": {
-      "cannot_connect": "Verbindung fehlgeschlagen"
+      "cannot_connect": "Verbindung fehlgeschlagen",
+      "no_device_selected": "Bitte ein erkanntes Geraet auswaehlen oder Host/IP eingeben",
+      "name_required": "Bitte einen Namen eingeben"
     }
   }
 }
