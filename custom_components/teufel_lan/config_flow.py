@@ -169,44 +169,53 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
         async def _resolve(service_type: str, service_name: str) -> None:
             info = AsyncServiceInfo(service_type, service_name)
             try:
-                requested = await info.async_request(async_zc.zeroconf, 2000)
-            except TypeError:
-                requested = await info.async_request(async_zc.zeroconf, timeout=2000)
+                try:
+                    requested = await info.async_request(async_zc.zeroconf, 2000)
+                except TypeError:
+                    requested = await info.async_request(async_zc.zeroconf, timeout=2000)
+
+                if not requested:
+                    return
+
+                try:
+                    addresses = info.parsed_scoped_addresses()
+                except Exception:
+                    addresses = info.parsed_addresses()
+
+                if not addresses:
+                    return
+
+                raw_host = addresses[0]
+                if isinstance(raw_host, bytes):
+                    host = raw_host.decode("utf-8", errors="ignore")
+                else:
+                    host = str(raw_host)
+                host = host.split("%", 1)[0].strip()
+                if not host:
+                    return
+
+                props = _decode_properties(info.properties)
+                device_name = props.get("name") or service_name.rstrip(".") or DEFAULT_NAME
+                serial = props.get("serial")
+                uuid = props.get("uuid")
+                mac = props.get("macAddress")
+                model = props.get("modelName") or props.get("productName") or props.get("modelId")
+                manufacturer = props.get("manufacturer") or props.get("vendor") or "Teufel"
+                unique_id = uuid or serial or mac or host
+
+                devices[unique_id] = {
+                    "id": unique_id,
+                    "unique_id": unique_id,
+                    "host": host,
+                    "name": device_name,
+                    "serial": serial,
+                    "uuid": uuid,
+                    "mac": mac,
+                    "model": model,
+                    "manufacturer": manufacturer,
+                }
             except Exception:
                 return
-
-            if not requested:
-                return
-
-            try:
-                addresses = info.parsed_scoped_addresses()
-            except Exception:
-                addresses = info.parsed_addresses()
-
-            if not addresses:
-                return
-
-            host = addresses[0].split("%", 1)[0]
-            props = _decode_properties(info.properties)
-            device_name = props.get("name") or service_name.rstrip(".") or DEFAULT_NAME
-            serial = props.get("serial")
-            uuid = props.get("uuid")
-            mac = props.get("macAddress")
-            model = props.get("modelName") or props.get("productName") or props.get("modelId")
-            manufacturer = props.get("manufacturer") or props.get("vendor") or "Teufel"
-            unique_id = uuid or serial or mac or host
-
-            devices[unique_id] = {
-                "id": unique_id,
-                "unique_id": unique_id,
-                "host": host,
-                "name": device_name,
-                "serial": serial,
-                "uuid": uuid,
-                "mac": mac,
-                "model": model,
-                "manufacturer": manufacturer,
-            }
 
         def _service_handler(_zc, service_type: str, service_name: str, state_change: ServiceStateChange):
             if state_change not in (ServiceStateChange.Added, ServiceStateChange.Updated):
@@ -222,7 +231,7 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 for service_type in service_types
             ]
 
-            await asyncio.sleep(1.5)
+            await asyncio.sleep(3.0)
 
             for browser in browsers:
                 cancel_result = (
