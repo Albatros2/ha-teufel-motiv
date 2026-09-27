@@ -1,13 +1,13 @@
 {
   "domain": "teufel_lan",
   "name": "Teufel LAN",
-  "codeowners": ["@your-github-user"],
+  "codeowners": ["@Albatros2"],
   "config_flow": true,
-  "documentation": "https://github.com/your-github-user/ha-teufel-lan",
+  "documentation": "https://github.com/Albatros2/ha-teufel-motiv",
   "iot_class": "local_polling",
   "loggers": ["custom_components.teufel_lan"],
   "requirements": [],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "zeroconf": [
     {
       "type": "_teufelstreaming._tcp.local.",

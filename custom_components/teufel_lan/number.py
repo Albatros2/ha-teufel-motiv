@@ -10,6 +10,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import TeufelRuntimeData
+from .entity import get_device_info
 
 
 def _extract_i32(payload: dict[str, Any] | None) -> int | None:
@@ -40,6 +41,7 @@ class TeufelEqNumber(CoordinatorEntity, NumberEntity):
         self._key = key
         self._attr_name = name
         self._attr_unique_id = f"{entry.entry_id}_{key}"
+        self._attr_device_info = get_device_info(entry)
 
     @property
     def native_value(self) -> float | None:

@@ -11,13 +11,43 @@ Unofficial local LAN integration for Teufel speakers discovered via mDNS service
 ## Features
 
 - mDNS discovery (zeroconf)
-- Media Player entity
+- Device grouping in Home Assistant (one device with multiple controls)
+- Media Player entity with artwork from stream metadata
 - Set volume via local API
 - Mute/unmute via local API
 - Bass and treble EQ controls
-- Stop playback
+- Buttons: Stop and Preset 1-3
 - Start TuneIn station by guide ID
 - Source selection from play history
+
+## Recommended Dashboard Card
+
+If you want a compact device-like view with sliders, toggle and buttons, add this to a dashboard:
+
+```yaml
+type: entities
+title: Teufel Speaker
+show_header_toggle: false
+entities:
+	- entity: media_player.teufel_speaker
+		name: Player
+	- entity: switch.teufel_speaker_mute
+		name: Mute
+	- entity: number.teufel_speaker_bass
+		name: Bass
+	- entity: number.teufel_speaker_treble
+		name: Treble
+	- entity: button.teufel_speaker_stop
+		name: Stop
+	- entity: button.teufel_speaker_preset_1
+		name: Preset 1
+	- entity: button.teufel_speaker_preset_2
+		name: Preset 2
+	- entity: button.teufel_speaker_preset_3
+		name: Preset 3
+```
+
+Entity IDs may vary depending on your configured name.
 
 ## Reverse engineered API paths used
 

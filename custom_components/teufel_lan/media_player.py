@@ -14,6 +14,7 @@ from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
 from . import TeufelRuntimeData
+from .entity import get_device_info
 
 
 def _extract_i32(payload: dict[str, Any] | None) -> int | None:
@@ -54,6 +55,7 @@ class TeufelMediaPlayer(CoordinatorEntity, MediaPlayerEntity):
             | MediaPlayerEntityFeature.PLAY_MEDIA
         )
         self._source_map: dict[str, str] = {}
+        self._attr_device_info = get_device_info(entry)
 
     @property
     def available(self) -> bool:
@@ -94,6 +96,20 @@ class TeufelMediaPlayer(CoordinatorEntity, MediaPlayerEntity):
             .get("playLogicData", {})
             .get("mediaRoles", {})
             .get("title")
+        )
+
+    @property
+    def media_image_url(self) -> str | None:
+        media = self.coordinator.data.get("media", {})
+        return (
+            media.get("value", {})
+            .get("playLogicData", {})
+            .get("trackRoles", {})
+            .get("icon")
+            or media.get("value", {})
+            .get("playLogicData", {})
+            .get("mediaRoles", {})
+            .get("icon")
         )
 
     @property

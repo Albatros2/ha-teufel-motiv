@@ -10,7 +10,12 @@ from .api import TeufelApiClient
 from .const import CONF_PORT, DEFAULT_PORT
 from .coordinator import TeufelDataUpdateCoordinator
 
-PLATFORMS: list[Platform] = [Platform.MEDIA_PLAYER, Platform.NUMBER]
+PLATFORMS: list[Platform] = [
+    Platform.MEDIA_PLAYER,
+    Platform.NUMBER,
+    Platform.SWITCH,
+    Platform.BUTTON,
+]
 
 
 @dataclass
