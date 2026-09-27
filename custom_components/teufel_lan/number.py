@@ -26,8 +26,8 @@ def _extract_i32(payload: dict[str, Any] | None) -> int | None:
 class TeufelEqNumber(CoordinatorEntity, NumberEntity):
     _attr_entity_category = EntityCategory.CONFIG
     _attr_native_step = 1
-    _attr_native_min_value = -10
-    _attr_native_max_value = 10
+    _attr_native_min_value = -6
+    _attr_native_max_value = 6
 
     def __init__(
         self,
