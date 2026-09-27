@@ -29,6 +29,7 @@ class TeufelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             "settings:/dspc/dspcBass": "bass",
             "settings:/dspc/dspcTreble": "treble",
             "settings:/system/maxIdleTime": "max_idle_time",
+            "settings:/system/maxBatteryIdleTime": "max_battery_idle_time",
             "player:player/data/playTime": "play_time",
             "teufel:mediaPlayerData": "media",
             "network:info": "network_info",
@@ -100,6 +101,9 @@ class TeufelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
             bass = await self.api.async_get_data("settings:/dspc/dspcBass", roles="@all", typ="structure")
             treble = await self.api.async_get_data("settings:/dspc/dspcTreble", roles="@all", typ="structure")
             max_idle_time = await self.api.async_get_data("settings:/system/maxIdleTime", roles="@all", typ="structure")
+            max_battery_idle_time = await self.api.async_get_data(
+                "settings:/system/maxBatteryIdleTime", roles="@all", typ="structure"
+            )
             network_info = await self.api.async_get_data("network:info", roles="@all", typ="structure")
             play_time = await self.api.async_get_data("player:player/data/playTime", roles="@all", typ="structure")
 
@@ -111,6 +115,7 @@ class TeufelDataUpdateCoordinator(DataUpdateCoordinator[dict[str, Any]]):
                 "bass": bass,
                 "treble": treble,
                 "max_idle_time": max_idle_time,
+                "max_battery_idle_time": max_battery_idle_time,
                 "network_info": network_info,
                 "play_time": play_time,
             }

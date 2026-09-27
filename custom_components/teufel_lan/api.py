@@ -157,6 +157,20 @@ class TeufelApiClient:
             value={"type": "i32_", "i32_": int(seconds)},
         )
 
+    async def async_set_max_battery_idle_time(self, seconds: int) -> Any:
+        return await self.async_set_data(
+            path="settings:/system/maxBatteryIdleTime",
+            roles="value",
+            value={"type": "i32_", "i32_": int(seconds)},
+        )
+
+    async def async_check_firmware_update(self) -> Any:
+        return await self.async_set_data(
+            path="firmwareupdate:checkForUpdate",
+            roles="activate",
+            value={"type": "bool_", "bool_": True},
+        )
+
     async def async_stop(self) -> None:
         await self.async_set_data(
             path="player:player/control",

@@ -86,6 +86,35 @@ class TeufelMaxIdleTimeNumber(CoordinatorEntity, NumberEntity):
         await self.coordinator.async_request_refresh()
 
 
+class TeufelMaxBatteryIdleTimeNumber(CoordinatorEntity, NumberEntity):
+    _attr_entity_category = EntityCategory.CONFIG
+    _attr_name = "Max Battery Idle Time"
+    _attr_native_step = 300
+    _attr_native_min_value = 0
+    _attr_native_max_value = 3600
+    _attr_native_unit_of_measurement = "s"
+    _attr_icon = "mdi:battery-clock"
+
+    def __init__(
+        self,
+        entry: ConfigEntry,
+        runtime: TeufelRuntimeData,
+    ) -> None:
+        super().__init__(runtime.coordinator)
+        self._api = runtime.api
+        self._attr_unique_id = f"{entry.entry_id}_max_battery_idle_time"
+        self._attr_device_info = get_device_info(entry)
+
+    @property
+    def native_value(self) -> float | None:
+        current = _extract_i32(self.coordinator.data.get("max_battery_idle_time"))
+        return float(current) if current is not None else None
+
+    async def async_set_native_value(self, value: float) -> None:
+        await self._api.async_set_max_battery_idle_time(int(round(value)))
+        await self.coordinator.async_request_refresh()
+
+
 async def async_setup_entry(
     hass: HomeAssistant,
     entry: ConfigEntry,
@@ -97,5 +126,6 @@ async def async_setup_entry(
             TeufelEqNumber(entry, runtime, key="bass", name="Bass"),
             TeufelEqNumber(entry, runtime, key="treble", name="Treble"),
             TeufelMaxIdleTimeNumber(entry, runtime),
+            TeufelMaxBatteryIdleTimeNumber(entry, runtime),
         ]
     )

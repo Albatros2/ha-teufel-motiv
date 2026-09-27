@@ -58,11 +58,22 @@ async def async_setup_entry(
     async def press_preset_3() -> None:
         await runtime.api.async_activate_preset(2)
 
+    async def press_check_firmware_update() -> None:
+        await runtime.api.async_check_firmware_update()
+
     async_add_entities(
         [
             TeufelActionButton(entry, runtime, "stop", "Stop", "mdi:stop", press_stop),
             TeufelActionButton(entry, runtime, "preset_1", "Preset 1", "mdi:numeric-1-circle", press_preset_1),
             TeufelActionButton(entry, runtime, "preset_2", "Preset 2", "mdi:numeric-2-circle", press_preset_2),
             TeufelActionButton(entry, runtime, "preset_3", "Preset 3", "mdi:numeric-3-circle", press_preset_3),
+            TeufelActionButton(
+                entry,
+                runtime,
+                "firmware_update_check",
+                "Check Firmware Update",
+                "mdi:update",
+                press_check_firmware_update,
+            ),
         ]
     )
