@@ -1,4 +1,4 @@
-# Teufel LAN Home Assistant Integration
+# Teufel Motiv Home LAN HA-Integration
 
 Unofficial local LAN integration for Teufel speakers discovered via mDNS service `_teufelstreaming._tcp.local.`
 

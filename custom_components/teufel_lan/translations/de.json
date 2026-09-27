@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Teufel LAN einrichten",
+        "title": "Teufel Motiv Home LAN HA-Integration einrichten",
         "description": "Verbinde einen Teufel Lautsprecher im lokalen Netzwerk.",
         "data": {
           "host": "Host oder IP",
@@ -11,7 +11,7 @@
         }
       },
       "zeroconf_confirm": {
-        "title": "Gefundenes Teufel-Geraet bestaetigen",
+        "title": "Gefundene Teufel Motiv Home LAN HA-Integration bestaetigen",
         "description": "Geraet unter Host {host} wurde per mDNS gefunden.",
         "data": {
           "port": "Port",

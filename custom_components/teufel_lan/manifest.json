@@ -1,13 +1,13 @@
 {
   "domain": "teufel_lan",
-  "name": "Teufel LAN",
+  "name": "Teufel Motiv Home LAN HA-Integration",
   "codeowners": ["@Albatros2"],
   "config_flow": true,
   "documentation": "https://github.com/Albatros2/ha-teufel-motiv",
   "iot_class": "local_polling",
   "loggers": ["custom_components.teufel_lan"],
   "requirements": [],
-  "version": "0.1.2",
+  "version": "0.1.3",
   "zeroconf": [
     {
       "type": "_teufelstreaming._tcp.local.",

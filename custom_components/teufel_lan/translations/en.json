@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Set up Teufel LAN",
+        "title": "Set up Teufel Motiv Home LAN HA-Integration",
         "description": "Connect to a Teufel speaker on your local network.",
         "data": {
           "host": "Host or IP",
@@ -11,7 +11,7 @@
         }
       },
       "zeroconf_confirm": {
-        "title": "Confirm discovered Teufel device",
+        "title": "Confirm discovered Teufel Motiv Home LAN HA-Integration",
         "description": "Discovered via mDNS at host {host}.",
         "data": {
           "port": "Port",
