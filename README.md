@@ -2,6 +2,12 @@
 
 Unofficial local LAN integration for Teufel speakers discovered via mDNS service `_teufelstreaming._tcp.local.`
 
+## Quick Add
+
+[![Open your Home Assistant instance and add this repository in HACS](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Albatros2&repository=ha-teufel-motiv&category=integration)
+
+[![Open your Home Assistant instance and start setting up this integration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=teufel_lan)
+
 ## Features
 
 - mDNS discovery (zeroconf)
