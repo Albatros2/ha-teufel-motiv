@@ -11,7 +11,7 @@ from .api import TeufelApiClient, TeufelApiError
 from .const import CONF_PORT, DEFAULT_NAME, DEFAULT_PORT, DOMAIN
 
 
-class TeufelLanConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     VERSION = 1
 
     async def async_step_user(self, user_input: dict[str, Any] | None = None):
