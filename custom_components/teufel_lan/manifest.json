@@ -7,10 +7,14 @@
   "iot_class": "local_polling",
   "loggers": ["custom_components.teufel_lan"],
   "requirements": [],
-  "version": "2026.9.27.3",
+  "version": "2026.9.27.4",
   "zeroconf": [
     {
       "type": "_teufelstreaming._tcp.local.",
+      "name": "*"
+    },
+    {
+      "type": "_sues800device._tcp.local.",
       "name": "*"
     }
   ]
