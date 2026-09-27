@@ -8,6 +8,18 @@ Unofficial local LAN integration for Teufel speakers discovered via mDNS service
 
 [![Open your Home Assistant instance and start setting up this integration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=teufel_lan)
 
+## Versioning Strategy
+
+This project uses calendar versioning for both integration version and Git tags:
+
+- Normal daily release: `YYYY.M.D` (example: `2026.9.27`)
+- Multiple releases on the same day: `YYYY.M.D.N` (example: `2026.9.27.1`, `2026.9.27.2`)
+
+Git tag format:
+
+- `vYYYY.M.D`
+- `vYYYY.M.D.N` for same-day follow-up releases
+
 ## Features
 
 - mDNS discovery (zeroconf)
