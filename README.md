@@ -36,10 +36,14 @@ entities:
 		name: Player
 	- entity: switch.teufel_speaker_mute
 		name: Mute
+	- entity: switch.teufel_speaker_dynamore
+		name: Dynamore
 	- entity: number.teufel_speaker_bass
 		name: Bass
 	- entity: number.teufel_speaker_treble
 		name: Treble
+	- entity: number.teufel_speaker_max_idle_time
+		name: Max Idle Time
 	- entity: button.teufel_speaker_stop
 		name: Stop
 	- entity: button.teufel_speaker_preset_1
@@ -70,6 +74,12 @@ Mute:
 
 ```json
 {"path":"settings:/mediaPlayer/mute","roles":"value","value":{"type":"bool_","bool_":true}}
+```
+
+Dynamore:
+
+```json
+{"path":"settings:/dspc/dynamoreEnabled","roles":"value","value":{"type":"bool_","bool_":true}}
 ```
 
 Bass:
