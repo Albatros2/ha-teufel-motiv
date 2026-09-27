@@ -1,0 +1,26 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Set up Teufel LAN",
+        "description": "Connect to a Teufel speaker on your local network.",
+        "data": {
+          "host": "Host or IP",
+          "port": "Port",
+          "name": "Name"
+        }
+      },
+      "zeroconf_confirm": {
+        "title": "Confirm discovered Teufel device",
+        "description": "Discovered via mDNS at host {host}.",
+        "data": {
+          "port": "Port",
+          "name": "Name"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Failed to connect"
+    }
+  }
+}

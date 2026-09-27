@@ -1,0 +1,26 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Teufel LAN einrichten",
+        "description": "Verbinde einen Teufel Lautsprecher im lokalen Netzwerk.",
+        "data": {
+          "host": "Host oder IP",
+          "port": "Port",
+          "name": "Name"
+        }
+      },
+      "zeroconf_confirm": {
+        "title": "Gefundenes Teufel-Geraet bestaetigen",
+        "description": "Geraet unter Host {host} wurde per mDNS gefunden.",
+        "data": {
+          "port": "Port",
+          "name": "Name"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Verbindung fehlgeschlagen"
+    }
+  }
+}

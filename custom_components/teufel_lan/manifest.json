@@ -1,0 +1,17 @@
+{
+  "domain": "teufel_lan",
+  "name": "Teufel LAN",
+  "codeowners": ["@your-github-user"],
+  "config_flow": true,
+  "documentation": "https://github.com/your-github-user/ha-teufel-lan",
+  "iot_class": "local_polling",
+  "loggers": ["custom_components.teufel_lan"],
+  "requirements": [],
+  "version": "0.1.0",
+  "zeroconf": [
+    {
+      "type": "_teufelstreaming._tcp.local.",
+      "name": "*"
+    }
+  ]
+}
