@@ -64,17 +64,72 @@ entities:
     name: Preset 2
   - entity: button.teufel_speaker_preset_3
     name: Preset 3
-    - entity: switch.teufel_speaker_eco_mode
-      name: Eco Mode
-    - entity: switch.teufel_speaker_notifications
-      name: Notifications
-    - entity: sensor.teufel_speaker_battery_state_of_charge
-      name: Battery SoC
-    - entity: sensor.teufel_speaker_power_target
-      name: Power Target
+  - entity: switch.teufel_speaker_eco_mode
+    name: Eco Mode
+  - entity: switch.teufel_speaker_notifications
+    name: Notifications
+  - entity: sensor.teufel_speaker_battery_state_of_charge
+    name: Battery SoC
+  - entity: sensor.teufel_speaker_power_target
+    name: Power Target
 ```
 
 Entity IDs may vary depending on your configured name.
+
+## Alternative Mobile Dashboard (Mushroom)
+
+If you use Mushroom cards, this layout is more compact and touch-friendly:
+
+```yaml
+type: vertical-stack
+cards:
+  - type: custom:mushroom-media-player-card
+    entity: media_player.teufel_speaker
+    name: Teufel Speaker
+    use_media_info: true
+    show_volume_level: true
+    volume_controls:
+      - volume_buttons
+      - volume_set
+    media_controls:
+      - play_pause_stop
+      - previous
+      - next
+  - type: horizontal-stack
+    cards:
+      - type: custom:mushroom-entity-card
+        entity: switch.teufel_speaker_mute
+        name: Mute
+        icon: mdi:volume-mute
+        tap_action:
+          action: toggle
+      - type: custom:mushroom-entity-card
+        entity: switch.teufel_speaker_dynamore
+        name: Dynamore
+        icon: mdi:surround-sound
+        tap_action:
+          action: toggle
+      - type: custom:mushroom-entity-card
+        entity: switch.teufel_speaker_eco_mode
+        name: Eco
+        icon: mdi:leaf
+        tap_action:
+          action: toggle
+  - type: entities
+    title: Sound & Battery
+    show_header_toggle: false
+    entities:
+      - entity: number.teufel_speaker_bass
+        name: Bass
+      - entity: number.teufel_speaker_treble
+        name: Treble
+      - entity: sensor.teufel_speaker_battery_state_of_charge
+        name: Battery SoC
+      - entity: sensor.teufel_speaker_power_target
+        name: Power Target
+```
+
+Requirement: install Mushroom from HACS (`piitaya/lovelace-mushroom`).
 
 ## Reverse engineered API paths used
 
