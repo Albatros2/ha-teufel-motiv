@@ -1,0 +1,23 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build release zip
+        run: |
+          cp README.md custom_components/teufel_lan/
+          cd custom_components/teufel_lan
+          zip -r ../../teufel_lan.zip . \
+            -x "__pycache__/*" "*.pyc"
+
+      - name: Upload zip to release
+        run: gh release upload ${{ github.ref_name }} teufel_lan.zip
+        env:
+          GH_TOKEN: ${{ github.token }}
