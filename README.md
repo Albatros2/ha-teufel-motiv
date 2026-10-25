@@ -8,6 +8,8 @@ Unofficial local LAN integration for Teufel speakers discovered via mDNS service
 
 [![Open your Home Assistant instance and start setting up this integration](https://my.home-assistant.io/badges/config_flow_start.svg)](https://my.home-assistant.io/redirect/config_flow_start/?domain=teufel_lan)
 
+Alternatively, open HACS in Home Assistant, go to **Integrations**, and search for **Teufel Motiv Home LAN HA-Integration**.
+
 ## Versioning Strategy
 
 This project uses calendar versioning for both integration version and Git tags:
